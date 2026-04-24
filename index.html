@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fynch — Lending Intelligence</title>
+  <meta name="description" content="fynch automates the spreadsheet work between deal intake and investment decision — so your team focuses on deals worth doing.">
+  <link rel="icon" type="image/svg+xml" href="./logo-bird.svg" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="./favicon-bird-white.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;0,800;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #ffe5d3;
+      --accent: #d95000;
+      --text: #002f6c;
+      --muted: #4A5C7A;
+      --border: #f5d7c2;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #ffffff url('./topo_light.png') center/cover fixed;
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 8vw;
+      transition: background 200ms ease, border-color 200ms ease, backdrop-filter 200ms ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .nav.scrolled {
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo img {
+      height: 80px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      color: var(--muted);
+      transition: color 200ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 10px 22px;
+      background: transparent;
+      cursor: pointer;
+      transition: background 200ms ease, color 200ms ease;
+      white-space: nowrap;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--text);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      transition: transform 300ms ease, opacity 300ms ease;
+    }
+
+    body.menu-open .hamburger span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    body.menu-open .hamburger span:nth-child(2) {
+      opacity: 0;
+    }
+
+    body.menu-open .hamburger span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(245, 240, 232, 0.98);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    body.menu-open .mobile-menu {
+      display: flex;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    .mobile-menu-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .mobile-menu-links a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .mobile-menu-links a:hover {
+      color: var(--accent);
+    }
+
+    .mobile-menu-cta {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 14px 32px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 80px;
+      padding-left: 8vw;
+      padding-right: 8vw;
+      padding-top: 100px;
+      padding-bottom: 80px;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 55% 50%, rgba(200,185,168,0.18), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-card {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0,47,108,0.10);
+      padding: 48px 40px;
+      flex-shrink: 0;
+      width: 400px;
+      animation: fadeUp 600ms ease-out both;
+      animation-delay: 200ms;
+    }
+
+    .hero-card-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 20px;
+      animation: fadeUp 600ms ease-out both;
+      animation-delay: 0ms;
+    }
+
+    .hero-headline {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 72px;
+      line-height: 1.1;
+      color: var(--text);
+      animation: fadeUp 600ms ease-out both;
+      animation-delay: 120ms;
+    }
+
+    .hero-headline .accent {
+      color: var(--accent);
+    }
+
+    .hero-subhead {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin-top: 24px;
+      line-height: 1.6;
+      animation: fadeUp 600ms ease-out both;
+      animation-delay: 240ms;
+    }
+
+    .hero-form {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-form input[type="text"],
+    .hero-form input[type="email"] {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 14px 20px;
+      width: 100%;
+      outline: none;
+      transition: border-color 200ms ease;
+    }
+
+    .hero-form input[type="text"]::placeholder,
+    .hero-form input[type="email"]::placeholder {
+      color: var(--muted);
+    }
+
+    .hero-form input[type="text"]:focus,
+    .hero-form input[type="email"]:focus {
+      border-color: var(--accent);
+    }
+
+    .hero-form button {
+      background: var(--accent);
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 16px 28px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: background 200ms ease;
+      margin-top: 4px;
+    }
+
+    .hero-form button:hover {
+      background: #b5a898;
+    }
+
+    .hero-form-note {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .hero-confirmation {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--accent);
+      margin-top: 48px;
+    }
+
+    /* ─── SECTION LABEL ───────────────────────────────────────── */
+
+    .section-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── PAIN BLOCK ──────────────────────────────────────────── */
+
+    .pain {
+      padding: 120px 8vw;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pain-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pain-card {
+      background: #ffffff;
+      padding: 48px 40px;
+    }
+
+    .pain-stat {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 64px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .pain-stat .unit {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .pain-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    /* ─── HOW IT WORKS ────────────────────────────────────────── */
+
+    .how {
+      padding: 120px 8vw;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .how-header {
+      margin-bottom: 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      color: var(--text);
+      margin-top: 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .step {
+      position: relative;
+      padding: 0 40px 0 0;
+    }
+
+    .step-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 80px;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-body {
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text);
+      border-left: 2px solid var(--accent);
+      padding-left: 14px;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .step-desc {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 320px;
+      line-height: 1.6;
+      padding-left: 16px;
+    }
+
+    /* ─── WHO IT'S FOR ────────────────────────────────────────── */
+
+    .who {
+      padding: 120px 8vw;
+      background: var(--surface);
+    }
+
+    .who-tiles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+
+    .who-tile {
+      background: #ffffff;
+      padding: 48px 40px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .who-tile h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--text);
+    }
+
+    .who-tile p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    /* ─── VALUE PROPS ────────────────────────────────────────── */
+
+    .value-props {
+      padding: 120px 8vw;
+      background: var(--surface);
+    }
+
+    .vp-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .vp-card {
+      background: #ffffff;
+      padding: 48px 40px;
+      border-top: 3px solid var(--accent);
+    }
+
+    .vp-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .vp-card p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── PHILOSOPHY ─────────────────────────────────────────── */
+
+    .philosophy {
+      padding: 120px 8vw;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .philosophy-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .philosophy-statement h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 42px;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 28px;
+    }
+
+    .philosophy-statement p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .philosophy-principles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .principle {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .principle:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .principle h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .principle p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ─── WAITLIST CTA ────────────────────────────────────────── */
+
+    .cta {
+      padding: 140px 8vw;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 52px;
+      color: var(--text);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.15;
+    }
+
+    .cta-subhead {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    .cta-form {
+      max-width: 660px;
+      margin: 48px auto 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .cta-form input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 14px 20px;
+      outline: none;
+      width: 100%;
+      transition: border-color 200ms ease;
+    }
+
+    .cta-form input::placeholder {
+      color: var(--muted);
+    }
+
+    .cta-form input:focus {
+      border-color: var(--accent);
+    }
+
+    .cta-form button {
+      grid-column: 1 / -1;
+      width: 100%;
+      background: var(--accent);
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 18px;
+      border: none;
+      cursor: pointer;
+      transition: background 200ms ease;
+    }
+
+    .cta-form button:hover {
+      background: #b5a898;
+    }
+
+    .cta-form-note {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .cta-confirmation {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--accent);
+      margin: 48px auto 0;
+      max-width: 660px;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+
+    .footer {
+      padding: 40px 8vw;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo img {
+      height: 28px;
+      width: auto;
+      mix-blend-mode: multiply;
+    }
+
+    .footer-copy {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-email {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+
+    @media (max-width: 900px) {
+      .nav-right {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-logo img {
+        height: 56px;
+      }
+
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 48px;
+      }
+
+      .hero-card {
+        width: 100%;
+        max-width: 460px;
+      }
+
+      .hero-headline {
+        font-size: 56px;
+      }
+
+      .how-header h2 {
+        font-size: 28px;
+      }
+
+      .pain-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .vp-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .philosophy-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .philosophy-statement h2 {
+        font-size: 32px;
+      }
+
+      .cta h2 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .pain-card,
+      .who-tile,
+      .vp-card {
+        padding: 36px 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-logo img {
+        height: 44px;
+      }
+
+      .hero {
+        gap: 32px;
+        padding-top: 80px;
+      }
+
+      .hero-card {
+        width: 100%;
+        max-width: none;
+        padding: 32px 24px;
+      }
+
+      .hero-headline {
+        font-size: 36px;
+      }
+
+      .hero-subhead {
+        font-size: 16px;
+      }
+
+      .pain {
+        padding: 64px 6vw;
+      }
+
+      .pain-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .pain-card {
+        padding: 32px 24px;
+      }
+
+      .pain-stat {
+        font-size: 48px;
+      }
+
+      .how {
+        padding: 64px 6vw;
+      }
+
+      .how-header {
+        margin-bottom: 48px;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .steps::before {
+        display: none;
+      }
+
+      .step {
+        padding: 0;
+      }
+
+      .step-num {
+        font-size: 56px;
+      }
+
+      .step-desc {
+        max-width: none;
+      }
+
+      .who {
+        padding: 64px 6vw;
+      }
+
+      .who-tiles {
+        grid-template-columns: 1fr;
+      }
+
+      .who-tile {
+        padding: 32px 24px;
+      }
+
+      .value-props {
+        padding: 64px 6vw;
+      }
+
+      .vp-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .vp-card {
+        padding: 32px 24px;
+      }
+
+      .philosophy {
+        padding: 64px 6vw;
+      }
+
+      .cta {
+        padding: 80px 6vw;
+      }
+
+      .cta h2 {
+        font-size: 32px;
+      }
+
+      .cta-form {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="#">
+      <img src="./logo-nav-clean.png" alt="fynch">
+    </a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#how-it-works">How it Works</a></li>
+        <li><a href="#who">Who it's For</a></li>
+        <li><a href="#early-access">Early Access</a></li>
+      </ul>
+      <a href="#early-access" class="nav-cta">Request Early Access</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu-links">
+      <li><a href="#how-it-works">How it Works</a></li>
+      <li><a href="#who">Who it's For</a></li>
+      <li><a href="#early-access">Early Access</a></li>
+    </ul>
+    <a href="#early-access" class="mobile-menu-cta">Request Early Access</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        CRE Underwriting.<br>
+        Done in <span class="accent">Minutes</span>,<br>
+        Not Days.
+      </h1>
+      <p class="hero-subhead">
+        fynch automates the spreadsheet work between deal intake and investment decision — so your team focuses on deals worth doing.
+      </p>
+    </div>
+    <div class="hero-card">
+      <p class="hero-card-label">Request Early Access</p>
+      <form class="hero-form" id="heroForm">
+        <input type="text" placeholder="Your name" required>
+        <input type="email" placeholder="Work email" required>
+        <button type="submit">Request Early Access →</button>
+      </form>
+      <p class="hero-form-note">No commitment. Early access only.</p>
+    </div>
+  </section>
+
+  <!-- PAIN BLOCK -->
+  <section class="pain" id="pain">
+    <p class="section-label">THE PROBLEM</p>
+    <div class="pain-cards">
+      <div class="pain-card">
+        <div class="pain-stat">60%</div>
+        <p class="pain-text">Of analyst time is spent reformatting rent rolls, not analyzing them.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-stat">0</div>
+        <p class="pain-text">Deal models reused. Every acquisition starts from a blank spreadsheet.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-stat">3 <span class="unit">days</span></div>
+        <p class="pain-text">Average time lost before a model is ready to present to a decision-maker.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how-it-works">
+    <div class="how-header">
+      <p class="section-label">THE PROCESS</p>
+      <h2>Three steps from origination to decision.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3 class="step-title">Drop Your Documents</h3>
+          <p class="step-desc">Upload your OM, rent roll, T12, and more. Any format, our system handles it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3 class="step-title">fynch Models It</h3>
+          <p class="step-desc">We extract, normalize, and build your underwriting model automatically. Humans validate the outputs instead of doing the dirty work manually.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3 class="step-title">Present with Confidence</h3>
+          <p class="step-desc">Get a clean, standardized output ready for your investment committee. All information is traceable and all decisions are explainable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE PROPS -->
+  <section class="value-props" id="value-props">
+    <p class="section-label">THE ADVANTAGE</p>
+    <div class="vp-cards">
+      <div class="vp-card">
+        <h3>Better Deal Selection</h3>
+        <p>Run thorough due diligence on every deal in your pipeline — not just the ones you have bandwidth for. Catch the winners earlier and pass on the losers faster.</p>
+      </div>
+      <div class="vp-card">
+        <h3>More Deals, Same Team</h3>
+        <p>Faster underwriting means more throughput without adding headcount. Your analysts spend their time on judgment calls, not spreadsheet prep.</p>
+      </div>
+      <div class="vp-card">
+        <h3>Long-term Intelligence</h3>
+        <p>Every deal you run builds your proprietary dataset. Surface market trends, benchmark property performance, and sharpen your investment thesis as your deal history grows.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR PHILOSOPHY -->
+  <section class="philosophy" id="philosophy">
+    <p class="section-label">OUR PHILOSOPHY</p>
+    <div class="philosophy-inner">
+      <div class="philosophy-statement">
+        <h2>Automation should grow your book, not just cut your overhead.</h2>
+        <p>Small banks and debt funds don't have a headcount problem — they have a throughput problem. Every deal aging in the queue is one your competitor closes instead.</p>
+      </div>
+      <div class="philosophy-principles">
+        <div class="principle">
+          <h3>Throughput Over Efficiency</h3>
+          <p>The goal is the same team closing twice as many loans — not fewer people doing the same volume.</p>
+        </div>
+        <div class="principle">
+          <h3>The Race to Automate</h3>
+          <p>Early movers build the margin to out-originate laggards. Those who wait will adopt automation only to survive.</p>
+        </div>
+        <div class="principle">
+          <h3>Humans for Judgment Work</h3>
+          <p>Spreadsheet prep and data entry is not underwriting. fynch clears the mechanical work so your team focuses on risk, market, and structure.</p>
+        </div>
+        <div class="principle">
+          <h3>Growth Protects Jobs</h3>
+          <p>Firms that equip their teams with the tools to win protect them. With the dirty work automated, each analyst closes more loans, making it profitable to hire the next one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="who" id="who">
+    <p class="section-label">WHO IT'S FOR</p>
+    <div class="who-tiles">
+      <div class="who-tile">
+        <h3>Small Institutional Lenders</h3>
+        <p>Stop losing deals to faster competitors. Run thorough credit analysis on every opportunity without bottlenecking your loan committee — more throughput, same team.</p>
+      </div>
+      <div class="who-tile">
+        <h3>Small Debt Funds</h3>
+        <p>Get to a term sheet before the next lender does. Your analysts stay focused on structuring and judgment — not chasing down rent rolls and rebuilding models from scratch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST CTA -->
+  <section class="cta" id="early-access">
+    <div class="cta-content">
+      <p class="section-label" style="text-align:center;">EARLY ACCESS</p>
+      <h2>Built for teams underwriting 5+ deals a month.</h2>
+      <p class="cta-subhead">
+        We're working with a small group of CRE firms to shape the product.<br>
+        If that's you, get in early.
+      </p>
+      <form class="cta-form" id="ctaForm">
+        <input type="text" placeholder="Your name" required>
+        <input type="email" placeholder="Work email" required>
+        <button type="submit">Request Early Access →</button>
+      </form>
+      <p class="cta-form-note">We'll reach out within 48 hours.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="./logo-nav-clean.png" alt="fynch">
+    </div>
+    <span class="footer-copy">© 2026 fynch</span>
+  </footer>
+
+  <script>
+    // Nav scroll behavior
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+      });
+    });
+
+    // Hero form submission
+    const heroForm = document.getElementById('heroForm');
+    heroForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const card = heroForm.closest('.hero-card');
+      card.innerHTML = '<p class="hero-confirmation" style="margin:0;">You\'re on the list.<br>We\'ll be in touch.</p>';
+    });
+
+    // Waitlist form submission
+    const ctaForm = document.getElementById('ctaForm');
+    ctaForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const confirmation = document.createElement('div');
+      confirmation.className = 'cta-confirmation';
+      confirmation.textContent = "You're on the list. We'll be in touch.";
+      const note = ctaForm.nextElementSibling;
+      ctaForm.replaceWith(confirmation);
+      if (note) note.remove();
+    });
+  </script>
+
+</body>
+</html>
